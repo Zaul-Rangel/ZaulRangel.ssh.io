@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Security System Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5em;
+    }
+
+    .item, .option-row {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .label {
+      font-size: 1em;
+      margin-bottom: 5px;
+    }
+
+    select, input[type="number"] {
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #results {
+      margin-top: 20px;
+      font-size: 1.1em;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .result-line {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Security System Calculator</h1>
+  <form id="calculator">
+    <div id="items"></div>
+
+    <div class="option-row">
+      <label class="label">Tax Rate:</label>
+      <select id="tax-rate">
+        <option value="1">1%</option>
+        <option value="2">2%</option>
+        <option value="3">3%</option>
+        <option value="4">4%</option>
+        <option value="5">5%</option>
+        <option value="6">6%</option>
+        <option value="7">7%</option>
+        <option value="8">8%</option>
+        <option value="9">9%</option>
+        <option value="10">10%</option>
+      </select>
+    </div>
+
+    <div class="option-row">
+      <label class="label">Voucher Discount ($):</label>
+      <input type="number" id="voucher-amount" min="0" step="1" value="0" />
+    </div>
+
+    <button type="button" onclick="calculateTotal()">Calculate Total</button>
+  </form>
+
+  <div id="results">
+    <div class="result-line" id="subtotal">Subtotal (Pre-tax): $0</div>
+    <div class="result-line" id="discount">Voucher Discount: -$0</div>
+    <div class="result-line" id="tax">Tax: $0</div>
+    <div class="result-line" id="total">Total (With Tax): $0</div>
+    <hr>
+    <div class="result-line" id="div3">3-Month Plan: $0/month</div>
+    <div class="result-line" id="div25">25-Month Plan: $0/month</div>
+    <div class="result-line" id="div36">36-Month Plan: $0/month</div>
+  </div>
+
+  <script>
+    const items = {
+      "D/W MINI-S (D/W)": 125,
+      "D/W STANDARD EXTENDED (D/WE)": 109,
+      "SHOCK SENSOR (SHOCK)": 149,
+      "MOTION": 219,
+      "GLASSBREAK": 219,
+      "TEMP SENSOR": 149,
+      "FLOOD": 149,
+      "TILT": 169,
+      "INDOOR SIREN (I.Siren)": 129,
+      "HARDWIRE OVERHEAD GARAGE DOOR": 89,
+      "SMOKE": 229,
+      "CO": 219,
+      "HEAT": 129,
+      "SECONDARY KEYPAD": 420,
+      "KEY FOB": 119,
+      "IQ BASE SPEAKER": 129,
+      "ALARM.COM - CAMERA - OUTDOOR (O.DoorCam)": 349,
+      "ALARM.COM - CAMERA - INDOOR (I.DoorCam)": 279,
+      "ALARM.COM VIDEO DOORBELL (VDB)": 349,
+      "ALARM.COM SMART CHIME": 129,
+      "GARAGE DOOR CONTROLLER": 249,
+      "LAMP MODULE (Z-WAVE)": 159,
+      "KWIKSET LOCK (Door Lock)": 249,
+      "ALARM.COM - THERMOSTAT": 249,
+      "DEAKO SIMPLE DIMMER": 79,
+      "DEAKO SMART SWITCH": 149,
+      "DEAKO SMART DIMMER": 179,
+      "EERO BASE WIFI HUB": 159,
+      "EERO PRO WIFI HUB": 249
+    };
+
+    const itemsDiv = document.getElementById("items");
+
+    for (const [name, price] of Object.entries(items)) {
+      const div = document.createElement("div");
+      div.className = "item";
+
+      const label = document.createElement("label");
+      label.className = "label";
+      label.textContent = `${name} ($${price})`;
+
+      const select = document.createElement("select");
+      select.name = name;
+      for (let i = 0; i <= 10; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        select.appendChild(option);
+      }
+
+      div.appendChild(label);
+      div.appendChild(select);
+      itemsDiv.appendChild(div);
+    }
+
+    function calculateTotal() {
+      const form = document.forms["calculator"];
+      let subtotal = 0;
+
+      for (const [name, price] of Object.entries(items)) {
+        const qty = parseInt(form[name].value);
+        subtotal += qty * price;
+      }
+
+      const taxRate = parseFloat(document.getElementById("tax-rate").value);
+      const voucherAmount = parseFloat(document.getElementById("voucher-amount").value) || 0;
+
+      const adjustedSubtotal = Math.max(0, subtotal - voucherAmount);
+      const tax = adjustedSubtotal * (taxRate / 100);
+      const total = adjustedSubtotal + tax;
+
+      document.getElementById("subtotal").textContent = `Subtotal (Pre-tax): $${subtotal.toFixed(2)}`;
+      document.getElementById("discount").textContent = `Voucher Discount: -$${voucherAmount.toFixed(2)}`;
+      document.getElementById("tax").textContent = `Tax: $${tax.toFixed(2)}`;
+      document.getElementById("total").textContent = `Total (With Tax): $${total.toFixed(2)}`;
+
+      document.getElementById("div3").textContent = `3-Month Plan: $${(total / 3).toFixed(2)}/month`;
+      document.getElementById("div25").textContent = `25-Month Plan: $${(total / 25).toFixed(2)}/month`;
+      document.getElementById("div36").textContent = `36-Month Plan: $${(total / 36).toFixed(2)}/month`;
+    }
+  </script>
+</body>
+</html>
