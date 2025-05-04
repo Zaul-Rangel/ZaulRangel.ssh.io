@@ -32,7 +32,7 @@
       margin-bottom: 5px;
     }
 
-    select, input[type="number"], input[type="checkbox"] {
+    select, input[type="number"] {
       padding: 8px;
       font-size: 1em;
       border-radius: 4px;
@@ -96,8 +96,6 @@
       <input type="number" id="voucher-amount" min="0" step="1" value="0" />
     </div>
 
-    <!-- Upgraded Shocks moved here below SHOCK SENSOR (SHOCK) -->
-    
     <button type="button" onclick="calculateTotal()">Calculate Total</button>
   </form>
 
@@ -110,7 +108,6 @@
     <div class="result-line" id="div3">3-Month Plan: $0/month</div>
     <div class="result-line" id="div25">25-Month Plan: $0/month</div>
     <div class="result-line" id="div36">36-Month Plan: $0/month</div>
-    <div class="result-line" id="upgraded-shocks-line">Upgraded Shocks: $0</div>
   </div>
 
   <script>
@@ -118,7 +115,7 @@
       "D/W MINI-S (D/W)": 125,
       "D/W STANDARD EXTENDED (D/WE)": 109,
       "SHOCK SENSOR (SHOCK)": 149,
-      "SHOCK SENSOR (Upgraded)": 50,
+      "SHOCK SENSOR (upgrade)": 50,
       "MOTION": 219,
       "GLASSBREAK": 219,
       "TEMP SENSOR": 149,
@@ -159,7 +156,7 @@
 
       const select = document.createElement("select");
       select.name = name;
-      for (let i = 0; i <= 30; i++) {
+      for (let i = 0; i <= 10; i++) {
         const option = document.createElement("option");
         option.value = i;
         option.textContent = i;
@@ -175,7 +172,6 @@
       const form = document.forms["calculator"];
       let subtotal = 0;
 
-      // Calculate subtotal based on quantities selected for each item
       for (const [name, price] of Object.entries(items)) {
         const qty = parseInt(form[name].value);
         subtotal += qty * price;
@@ -183,22 +179,16 @@
 
       const taxRate = parseFloat(document.getElementById("tax-rate").value);
       const voucherAmount = parseFloat(document.getElementById("voucher-amount").value) || 0;
-      const upgradedShocksQty = parseInt(document.getElementById("upgraded-shocks-quantity").value);
-      const upgradedShocksPrice = upgradedShocksQty * 50;
 
-      // Calculate the adjusted subtotal after applying voucher and shocks
-      const adjustedSubtotal = Math.max(0, subtotal - voucherAmount) + upgradedShocksPrice;
+      const adjustedSubtotal = Math.max(0, subtotal - voucherAmount);
       const tax = adjustedSubtotal * (taxRate / 100);
       const total = adjustedSubtotal + tax;
 
-      // Update result display
       document.getElementById("subtotal").textContent = `Subtotal (Pre-tax): $${subtotal.toFixed(2)}`;
       document.getElementById("discount").textContent = `Voucher Discount: -$${voucherAmount.toFixed(2)}`;
       document.getElementById("tax").textContent = `Tax: $${tax.toFixed(2)}`;
       document.getElementById("total").textContent = `Total (With Tax): $${total.toFixed(2)}`;
-      document.getElementById("upgraded-shocks-line").textContent = `Upgraded Shocks: $${upgradedShocksPrice.toFixed(2)}`;
 
-      // Show the 3, 25, and 36 month payment options
       document.getElementById("div3").textContent = `3-Month Plan: $${(total / 3).toFixed(2)}/month`;
       document.getElementById("div25").textContent = `25-Month Plan: $${(total / 25).toFixed(2)}/month`;
       document.getElementById("div36").textContent = `36-Month Plan: $${(total / 36).toFixed(2)}/month`;
