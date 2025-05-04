@@ -177,6 +177,7 @@
       const form = document.forms["calculator"];
       let subtotal = 0;
 
+      // Calculate subtotal based on quantities selected for each item
       for (const [name, price] of Object.entries(items)) {
         const qty = parseInt(form[name].value);
         subtotal += qty * price;
@@ -186,16 +187,19 @@
       const voucherAmount = parseFloat(document.getElementById("voucher-amount").value) || 0;
       const upgradedShocks = document.getElementById("upgraded-shocks").checked ? 50 : 0;
 
+      // Add upgraded shocks to the subtotal if selected
       const adjustedSubtotal = Math.max(0, subtotal - voucherAmount) + upgradedShocks;
       const tax = adjustedSubtotal * (taxRate / 100);
       const total = adjustedSubtotal + tax;
 
+      // Update result display
       document.getElementById("subtotal").textContent = `Subtotal (Pre-tax): $${subtotal.toFixed(2)}`;
       document.getElementById("discount").textContent = `Voucher Discount: -$${voucherAmount.toFixed(2)}`;
       document.getElementById("tax").textContent = `Tax: $${tax.toFixed(2)}`;
       document.getElementById("total").textContent = `Total (With Tax): $${total.toFixed(2)}`;
       document.getElementById("upgraded-shocks-line").textContent = `Upgraded Shocks: $${upgradedShocks.toFixed(2)}`;
 
+      // Show the 3, 25, and 36 month payment options
       document.getElementById("div3").textContent = `3-Month Plan: $${(total / 3).toFixed(2)}/month`;
       document.getElementById("div25").textContent = `25-Month Plan: $${(total / 25).toFixed(2)}/month`;
       document.getElementById("div36").textContent = `36-Month Plan: $${(total / 36).toFixed(2)}/month`;
@@ -203,4 +207,3 @@
   </script>
 </body>
 </html>
-
