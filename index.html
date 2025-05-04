@@ -96,11 +96,8 @@
       <input type="number" id="voucher-amount" min="0" step="1" value="0" />
     </div>
 
-    <div class="option-row">
-      <label class="label">Upgraded Shocks ($50):</label>
-      <input type="checkbox" id="upgraded-shocks" />
-    </div>
-
+    <!-- Upgraded Shocks moved here below SHOCK SENSOR (SHOCK) -->
+    
     <button type="button" onclick="calculateTotal()">Calculate Total</button>
   </form>
 
@@ -121,6 +118,7 @@
       "D/W MINI-S (D/W)": 125,
       "D/W STANDARD EXTENDED (D/WE)": 109,
       "SHOCK SENSOR (SHOCK)": 149,
+      "SHOCK SENSOR (Upgraded)": 50,
       "MOTION": 219,
       "GLASSBREAK": 219,
       "TEMP SENSOR": 149,
@@ -161,7 +159,7 @@
 
       const select = document.createElement("select");
       select.name = name;
-      for (let i = 0; i <= 10; i++) {
+      for (let i = 0; i <= 30; i++) {
         const option = document.createElement("option");
         option.value = i;
         option.textContent = i;
@@ -185,10 +183,11 @@
 
       const taxRate = parseFloat(document.getElementById("tax-rate").value);
       const voucherAmount = parseFloat(document.getElementById("voucher-amount").value) || 0;
-      const upgradedShocks = document.getElementById("upgraded-shocks").checked ? 50 : 0;
+      const upgradedShocksQty = parseInt(document.getElementById("upgraded-shocks-quantity").value);
+      const upgradedShocksPrice = upgradedShocksQty * 50;
 
-      // Add upgraded shocks to the subtotal if selected
-      const adjustedSubtotal = Math.max(0, subtotal - voucherAmount) + upgradedShocks;
+      // Calculate the adjusted subtotal after applying voucher and shocks
+      const adjustedSubtotal = Math.max(0, subtotal - voucherAmount) + upgradedShocksPrice;
       const tax = adjustedSubtotal * (taxRate / 100);
       const total = adjustedSubtotal + tax;
 
@@ -197,7 +196,7 @@
       document.getElementById("discount").textContent = `Voucher Discount: -$${voucherAmount.toFixed(2)}`;
       document.getElementById("tax").textContent = `Tax: $${tax.toFixed(2)}`;
       document.getElementById("total").textContent = `Total (With Tax): $${total.toFixed(2)}`;
-      document.getElementById("upgraded-shocks-line").textContent = `Upgraded Shocks: $${upgradedShocks.toFixed(2)}`;
+      document.getElementById("upgraded-shocks-line").textContent = `Upgraded Shocks: $${upgradedShocksPrice.toFixed(2)}`;
 
       // Show the 3, 25, and 36 month payment options
       document.getElementById("div3").textContent = `3-Month Plan: $${(total / 3).toFixed(2)}/month`;
