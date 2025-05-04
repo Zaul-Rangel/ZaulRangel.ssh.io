@@ -32,7 +32,7 @@
       margin-bottom: 5px;
     }
 
-    select, input[type="number"] {
+    select, input[type="number"], input[type="checkbox"] {
       padding: 8px;
       font-size: 1em;
       border-radius: 4px;
@@ -96,6 +96,11 @@
       <input type="number" id="voucher-amount" min="0" step="1" value="0" />
     </div>
 
+    <div class="option-row">
+      <label class="label">Upgraded Shocks ($50):</label>
+      <input type="checkbox" id="upgraded-shocks" />
+    </div>
+
     <button type="button" onclick="calculateTotal()">Calculate Total</button>
   </form>
 
@@ -108,6 +113,7 @@
     <div class="result-line" id="div3">3-Month Plan: $0/month</div>
     <div class="result-line" id="div25">25-Month Plan: $0/month</div>
     <div class="result-line" id="div36">36-Month Plan: $0/month</div>
+    <div class="result-line" id="upgraded-shocks-line">Upgraded Shocks: $0</div>
   </div>
 
   <script>
@@ -178,8 +184,9 @@
 
       const taxRate = parseFloat(document.getElementById("tax-rate").value);
       const voucherAmount = parseFloat(document.getElementById("voucher-amount").value) || 0;
+      const upgradedShocks = document.getElementById("upgraded-shocks").checked ? 50 : 0;
 
-      const adjustedSubtotal = Math.max(0, subtotal - voucherAmount);
+      const adjustedSubtotal = Math.max(0, subtotal - voucherAmount) + upgradedShocks;
       const tax = adjustedSubtotal * (taxRate / 100);
       const total = adjustedSubtotal + tax;
 
@@ -187,6 +194,7 @@
       document.getElementById("discount").textContent = `Voucher Discount: -$${voucherAmount.toFixed(2)}`;
       document.getElementById("tax").textContent = `Tax: $${tax.toFixed(2)}`;
       document.getElementById("total").textContent = `Total (With Tax): $${total.toFixed(2)}`;
+      document.getElementById("upgraded-shocks-line").textContent = `Upgraded Shocks: $${upgradedShocks.toFixed(2)}`;
 
       document.getElementById("div3").textContent = `3-Month Plan: $${(total / 3).toFixed(2)}/month`;
       document.getElementById("div25").textContent = `25-Month Plan: $${(total / 25).toFixed(2)}/month`;
@@ -195,3 +203,4 @@
   </script>
 </body>
 </html>
+
